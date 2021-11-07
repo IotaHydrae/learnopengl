@@ -50,3 +50,6 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+demo_opengl_create_window/build
+build
+.vscode

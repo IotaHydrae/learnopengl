@@ -1,0 +1,22 @@
+CC=gcc
+
+CFLAG+=-Wall -O2
+LDFLAGS+=-lglfw3 
+
+BIN:=demo
+
+SRCS+=glad.c main.c
+OBJS:=$(patsubst %.c, %.o, $(SRCS))
+
+
+all:$(BIN)
+
+%.o:%.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BIN):$(OBJS)
+	$(CC) $^ -o $@ $(LDFLAGS)
+
+.PHONY:clean
+clean:
+	rm -rf *.o $(BIN)
