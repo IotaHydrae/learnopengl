@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -11,11 +12,18 @@ void processInput(GLFWwindow *window)
 {
 	if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
+	
+	if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS);
+	if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS);
+	if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS);
+	if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS);
+	if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS);
 }
 
 int main(int argc, char **argv)
 {
 	printf("Hello, World!\n");
+
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
