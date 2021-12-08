@@ -51,5 +51,6 @@ Module.symvers
 Mkfile.old
 dkms.conf
 demo_opengl_create_window/build
+demo_opengl_create_triangle/build
 build
 .vscode
