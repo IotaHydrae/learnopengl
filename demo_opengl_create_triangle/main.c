@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 
 #define GLSL_FILE_LENGTH 4096
+#define DEBUG_INFO
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
@@ -54,8 +55,9 @@ int main(int argc, char **argv)
 	glViewport(0, 0, 800, 600);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-	unsigned int VAO;
-	unsigned int VBO;
+	unsigned int VAO;	/* vertex array object */
+	unsigned int VBO;	/* vertex buffer object */
+
 	/* a coord array of `xyz` for triangle */
 	float vertices[] = {
 		//positions			//colors
@@ -153,6 +155,10 @@ int main(int argc, char **argv)
 		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
 		printf("ERROR: SHADER fragmentShader compile failed!\n");
 	}
+
+	int nrAttributes;
+	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
+	printf("Maxium nr of vertex attributes supported: %d\n", nrAttributes);
 
 	/**
 	 * create a program object, the `glCreateProgram` 
