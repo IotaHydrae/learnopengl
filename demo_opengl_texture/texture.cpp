@@ -3,11 +3,6 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-#version 330 core
-out vec4 fragColor;
-in vec3 ourColor;
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
-void main()
-{
-  fragColor = vec4(ourColor, 1.0);
-}
