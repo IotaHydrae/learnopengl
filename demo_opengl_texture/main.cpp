@@ -19,6 +19,9 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 
 #define GLSL_FILE_LENGTH 4096
 #define DEBUG_INFO
@@ -72,32 +75,37 @@ int main(int argc, char **argv)
 
     unsigned int VAO;	/* vertex array object */
 	unsigned int VBO;	/* vertex buffer object */
+	unsigned int EBO;
 
 	/* a coord array of `xyz` for triangle */
 	float vertices[] = {
-		//positions			//colors
-		-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
-		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-		 0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
+		//positions			//colors		  //texture coords
+		 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+		-0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f
+	};
+	unsigned int indices[] = {
+		0, 1, 2,
+		1, 2, 3
 	};
 
-	float texCoords[] = {
-		0.0f, 0.0f,	/* lower-left corner */
-		1.0f, 0.0f, /* lower-right corner */
-		0.5f, 1.0f, /* top-center corner */
-	};
 
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 	/* generate a vertex buffer object with a ID */
 	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
 
 	/* bind this VBO type to `GL_ARRAY_BUFFER` */
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
 	/* copy the previously defined vertex data into the buffer's memory */
 	/* `GL_STATIC_DRAW` because the data filled in that nerver changed */
-	glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	
+	/* do the same as top */
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	/* set the vertex attributes pointers for positions */
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
@@ -107,18 +115,38 @@ int main(int argc, char **argv)
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
+	/* set texture coords attributes */
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6*sizeof(float)));
+	glEnableVertexAttribArray(2);
+
 	/* load,compile,link the glsl source */
     Shader ourShader("../vertexShaderSource.glsl", "../fragmentShaderSource.glsl");
 
 	/* texture settings */
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-
-	/* `glGenTextures` also could revice a array and sizeof it. */
 	unsigned int texture;
 	glGenTextures(1, &texture);
 	
-	glBindTexture
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	/* load texture used by `stb_image.h` */
+	int width, height, nrChannels;
+	unsigned char *data = stbi_load("../container.jpg", &width, &height, &nrChannels, 0);
+
+	if(data)
+	{
+		/* `glGenTextures` also could revice a array and sizeof it. */
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "Faield to load texture " << std::endl;
+	}
+	stbi_image_free(data);
     
 	/* the render loop */
 	while (!glfwWindowShouldClose(window))
@@ -141,7 +169,9 @@ int main(int argc, char **argv)
 		// glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
 
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		// glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
 
 		/* check and call events and swap the buffers */
 		glfwSwapBuffers(window);
