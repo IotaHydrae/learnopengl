@@ -16,13 +16,15 @@ sudo apt install cmake libx11-dev \
     libxinerama-dev libxcursor-dev \
     libxi-dev -y
 ```
-Then do:
+Then do these:
 ```shell
+unzip glfw-3.3.5.zip
+cd glfw-3.3.5
 # pretend the source code directory at ~/Downloads/glfw-xxx
 # create a build dir
 mkdir build && cd build && cmake ..
 # build the glfw project
-make -j8
+make -j4
 # install the headers and libs
 sudo make install
 ```
