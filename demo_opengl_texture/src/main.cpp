@@ -121,12 +121,14 @@ int main(int argc, char **argv)
 
 	/* load,compile,link the glsl source */
     Shader ourShader("../vertexShaderSource.glsl", "../fragmentShaderSource.glsl");
+	ourShader.use();
+	
+	unsigned int texture1, texture2;
+	/* number of texture objects to be generated. */
+	glGenTextures(1, &texture1);
+	glBindTexture(GL_TEXTURE_2D, texture1);
 
 	/* texture settings */
-	unsigned int texture;
-	glGenTextures(1, &texture);
-	
-	glBindTexture(GL_TEXTURE_2D, texture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -134,8 +136,8 @@ int main(int argc, char **argv)
 
 	/* load texture used by `stb_image.h` */
 	int width, height, nrChannels;
-	unsigned char *data = stbi_load("../container.jpg", &width, &height, &nrChannels, 0);
-
+	stbi_set_flip_vertically_on_load(true);
+	unsigned char *data = stbi_load("../assets/container.jpg", &width, &height, &nrChannels, 0);
 	if(data)
 	{
 		/* `glGenTextures` also could revice a array and sizeof it. */
@@ -147,7 +149,19 @@ int main(int argc, char **argv)
 		std::cout << "Faield to load texture " << std::endl;
 	}
 	stbi_image_free(data);
-    
+
+	glGenTextures(1, &texture2);
+	glBindTexture(GL_TEXTURE_2D, texture2);
+	data = stbi_load("../assets/awesomeface.png", &width, &height, &nrChannels, 0);
+	if(data)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	stbi_image_free(data);
+	glUniform1i(glGetUniformLocation(ourShader.ID, "texture1"), 0);
+	ourShader.setInt("texture2", 1);
+
 	/* the render loop */
 	while (!glfwWindowShouldClose(window))
 	{
@@ -158,26 +172,26 @@ int main(int argc, char **argv)
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture1);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texture2);
+
 		/* active the shader */
 		ourShader.use();
-        // ourShader.setFloat("someUniform", 1.0f);
-		
-		/* update the color of triangle dynamically */
-		// float timeValue = glfwGetTime();
-		// float greenValue = (sin(timeValue)/2.0f)+0.5f;
-		// int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-		// glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
-
 		glBindVertexArray(VAO);
-		// glDrawArrays(GL_TRIANGLES, 0, 3);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		glBindVertexArray(0);
 
 		/* check and call events and swap the buffers */
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
+	/* de-allocate all resources onclude they're outlived their purpose */
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
 
+	/* clearing all previously allocated GLFW resources. */
 	glfwTerminate();
 
     return 0;

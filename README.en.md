@@ -7,37 +7,34 @@
 
 # learnopengl
 
-#### Description
-{**When you're done, you can delete the content in this README and update the file with details for others getting started with your repository**}
+## requirements
 
-#### Software Architecture
-Software architecture description
+To build glfw, you need to install these libs:
+```shell
+sudo apt install cmake libx11-dev \
+    libgl-dev libxrandr-dev \
+    libxinerama-dev libxcursor-dev \
+    libxi-dev -y
+```
+Then do these:
+```shell
+unzip glfw-3.3.5.zip
+cd glfw-3.3.5
+# pretend the source code directory at ~/Downloads/glfw-xxx
+# create a build dir
+mkdir build && cd build && cmake ..
+# build the glfw project
+make -j4
+# install the headers and libs
+sudo make install
+```
 
-#### Installation
+Also you need unzip the `glad.zip`, then 
+copy the `include` dir to ex:`/usr/local/include`
+and copy the `glad.c` which in `src` dir to your project.
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+The ldflags normally will be like this:
+> -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl -lm
 
-#### Instructions
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### Contribution
-
-1.  Fork the repository
-2.  Create Feat_xxx branch
-3.  Commit your code
-4.  Create Pull Request
-
-
-#### Gitee Feature
-
-1.  You can use Readme\_XXX.md to support different languages, such as Readme\_en.md, Readme\_zh.md
-2.  Gitee blog [blog.gitee.com](https://blog.gitee.com)
-3.  Explore open source project [https://gitee.com/explore](https://gitee.com/explore)
-4.  The most valuable open source project [GVP](https://gitee.com/gvp)
-5.  The manual of Gitee [https://gitee.com/help](https://gitee.com/help)
-6.  The most popular members  [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+Finally, I advise you use cmake to build your project
+which is really easy to be configured.
