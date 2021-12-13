@@ -13,7 +13,8 @@ project(learnopengl VERSION 0.1)
 # )
 
 # make source file list.
-list(APPEND C_SRCS glad.c main.cpp shader.cpp texture.cpp)
+list(APPEND C_SRCS src/*.c src/*.cpp)
+include_directories(GLOB "include")
 
 link_libraries(glfw3 GL X11 pthread Xrandr Xi dl m)
 
