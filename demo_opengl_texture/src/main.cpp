@@ -80,10 +80,10 @@ int main(int argc, char **argv)
 	/* a coord array of `xyz` for triangle */
 	float vertices[] = {
 		//positions			//colors		  //texture coords
-		 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+		 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 100.0f, 100.0f,
+		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 100.0f, 0.0f,
 		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-		-0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f
+		-0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 100.0f
 	};
 	unsigned int indices[] = {
 		0, 1, 2,
@@ -152,6 +152,10 @@ int main(int argc, char **argv)
 
 	glGenTextures(1, &texture2);
 	glBindTexture(GL_TEXTURE_2D, texture2);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	data = stbi_load("../assets/awesomeface.png", &width, &height, &nrChannels, 0);
 	if(data)
 	{
