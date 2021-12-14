@@ -108,7 +108,7 @@ int main(int argc, char **argv)
 	glEnableVertexAttribArray(1);
 
     Shader ourShader("../vertexShaderSource.glsl", "../fragmentShaderSource.glsl");
-    
+
 	/* the render loop */
 	while (!glfwWindowShouldClose(window))
 	{
@@ -121,13 +121,12 @@ int main(int argc, char **argv)
 
 		/* active the shader */
 		ourShader.use();
-        // ourShader.setFloat("someUniform", 1.0f);
 		
-		/* update the color of triangle dynamically */
-		// float timeValue = glfwGetTime();
-		// float greenValue = (sin(timeValue)/2.0f)+0.5f;
-		// int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-		// glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+		/* give vertex shder an offset */
+		int vertexOffset_x = glGetUniformLocation(ourShader.mID_shaderProgram, "offset");
+		
+		glUniform4f(vertexOffset_x, 0.5f, 0.5f, 0.0f, 1.0f);
+
 
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
