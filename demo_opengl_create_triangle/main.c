@@ -70,7 +70,11 @@ int main(int argc, char **argv)
 		//positions			//colors
 		-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
 		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-		 0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
+		-0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
+		/* group2 */
+		-0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
+		 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
 	};
 
 	glGenVertexArrays(1, &VAO);
@@ -83,7 +87,7 @@ int main(int argc, char **argv)
 
 	/* copy the previously defined vertex data into the buffer's memory */
 	/* `GL_STATIC_DRAW` because the data filled in that nerver changed */
-	glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	/* set the vertex attributes pointers for positions */
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
@@ -209,12 +213,13 @@ int main(int argc, char **argv)
 		
 		/* update the color of triangle dynamically */
 		// float timeValue = glfwGetTime();
-		// float greenValue = (sin(timeValue)/2.0f)+0.5f;
+		// float greenValue = sin(timeValue)/2.0f+0.5f;
+		// // printf("green value: %f\n", greenValue);
 		// int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
 		// glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
 
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		/* check and call events and swap the buffers */
 		glfwSwapBuffers(window);
