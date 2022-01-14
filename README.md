@@ -38,3 +38,4 @@ The ldflags normally will be like this:
 
 Finally, I advise you use cmake to build your project
 which is really easy to be configured.
+test
